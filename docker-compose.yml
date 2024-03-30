@@ -1,0 +1,14 @@
+services:
+  postgres_service:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=kirill
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=centek
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432"
+volumes:
+  postgres_volume:
