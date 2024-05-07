@@ -36,10 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "corsheaders",
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+
     #apps
     'med',
     'drf',
@@ -85,11 +86,11 @@ WSGI_APPLICATION = 'consultation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'centek',
-        'USER': 'kirill',
-        'PASSWORD': '1234',
+        'NAME': 'medicine',
+        'USER': 'postgres',
+        'PASSWORD': 'adeqou16',
         'HOST': '127.0.0.1',
-        'PORT':  '5433'
+        'PORT':  '5432'
     }
 }
 
@@ -132,6 +133,7 @@ STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -165,7 +167,11 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
-    'USER_SERIALIZER': 'drf.serializers.UserSerializer',
+    'SERIALIZERS': {
+        'user_create': 'drf.serializers.UserSerializer',
+        'token_create': 'drf.serializers.TokenCreateSerializer'
+    },
+    # 'AUTH': {'TOKEN_MODEL': None},
 }
 
 # email smtp

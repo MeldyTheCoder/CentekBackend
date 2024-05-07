@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from med.models import *
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
@@ -14,6 +16,7 @@ class UserSerializer(UserCreateSerializer):
         fields = (
             'id',
             'username',
+            'surname',
             'email',
             'role',
             'avatar',
@@ -34,52 +37,28 @@ class UserSerializer(UserCreateSerializer):
         return user
 
 
+# class CustomUserSerializer(UserSerializer):
+#     class Meta:
+#         model = User
+#         fields = '__all__'
+
+
 class SpeicalitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Speciality
         fields = ('id', 'name')
 
 
-class DoctorSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    speciality = SpeicalitySerializer()
-
-    class Meta:
-        model = Doctor
-        fields = ('id','first_name', 'last_name', 'surname', 'description', 'user', 'speciality')
-
-
-class ConsultationSerializer(serializers.ModelSerializer):
-    from_doctor = DoctorSerializer()
-    to_user = UserSerializer()
-
-    class Meta:
-        model = Consultation
-        fields = ('id','date_created', 'from_doctor', 'to_user')
-
-
-class ConsultationMessage(serializers.ModelSerializer):
-    from_user = UserSerializer()
-    consultation = ConsultationSerializer()
-
-    class Meta:
-        model = ConsultationMessage
-        fields = ('id', 'from_user', 'consultation', 'message', 'attachments')
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    from_user = UserSerializer()
-    to_doctor = DoctorSerializer()
-
-    class Meta:
-        model = Review
-        fields = ('id', 'from_user', 'to_doctor', 'rate', 'message')
-
-
 class UserEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'avatar')
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'avatar')
 
     def update(self, instance, validated_data):
         image = validated_data.pop('avatar', None)
@@ -96,7 +75,22 @@ class UserEditSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class PassportSerializer(serializers.ModelSerializer):
+    patient = UserSerializer()
+
     class Meta:
-        model = Review
-        fields = ('id', 'from_user', 'to_doctor', 'rate', 'message', 'consultation')
+        model = Passport
+        fields = '__all__'
+
+
+class HospitalizationSerializer(serializers.ModelSerializer):
+    patient = UserSerializer()
+    passport = PassportSerializer()
+
+    class Meta:
+        model = Hospitalization
+        fields = '__all__'
+
+
+class TokenCreateSerializer(TokenObtainPairSerializer):
+    pass
